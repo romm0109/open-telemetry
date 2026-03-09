@@ -1,0 +1,21 @@
+{
+  "name": "otel-microservices-demo",
+  "version": "1.0.0",
+  "description": "Minimal OpenTelemetry distributed tracing + metrics demo with two Express services and Winston log enrichment",
+  "scripts": {
+    "start:a": "SERVICE_NAME=service-a node --require ./tracing.js service-a.js",
+    "start:b": "SERVICE_NAME=service-b node --require ./tracing.js service-b.js"
+  },
+  "dependencies": {
+    "@apollo/server": "^4.13.0",
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.54.0",
+    "@opentelemetry/instrumentation-runtime-node": "^0.13.0",
+    "@opentelemetry/sdk-metrics": "^1.28.0",
+    "@opentelemetry/sdk-node": "^0.57.0",
+    "@opentelemetry/winston-transport": "^0.10.0",
+    "express": "^4.18.2",
+    "pg": "^8.11.3",
+    "winston": "^3.11.0"
+  }
+}
