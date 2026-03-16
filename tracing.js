@@ -14,6 +14,10 @@ const {
   getNodeAutoInstrumentations,
 } = require("@opentelemetry/auto-instrumentations-node");
 const { SimpleSpanProcessor } = require("@opentelemetry/sdk-trace-node");
+const {
+  TraceIdRatioBasedSampler,
+  ParentBasedSampler,
+} = require("@opentelemetry/sdk-trace-base");
 const winston = require("winston");
 const WinstonSpanExporter = require("./SpanExporter");
 
@@ -29,8 +33,15 @@ const spanLogger = winston.createLogger({
   transports: [new winston.transports.Console()],
 });
 
+// Sample 10% of traces. ParentBased ensures that once a trace is sampled,
+// all child spans within it are also kept (or dropped) consistently.
+const sampler = new ParentBasedSampler({
+  root: new TraceIdRatioBasedSampler(0.1),
+});
+
 const sdk = new NodeSDK({
   serviceName,
+  sampler,
   spanProcessors: [new SimpleSpanProcessor(new WinstonSpanExporter(spanLogger))],
   instrumentations: [
     getNodeAutoInstrumentations({

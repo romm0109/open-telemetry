@@ -12,8 +12,8 @@
 "use strict";
 
 const express = require("express");
-const { Pool } = require("pg");
 const winston = require("winston");
+const { OpenTelemetryTransportV3 } = require("@opentelemetry/winston-transport");
 const { ApolloServer } = require("@apollo/server");
 const { expressMiddleware } = require("@apollo/server/express4");
 const bodyParser = require("body-parser");
@@ -29,18 +29,8 @@ const logger = winston.createLogger({
   ),
   transports: [
     new winston.transports.Console(),
+    new OpenTelemetryTransportV3(),
   ],
-});
-
-// ---------------------------------------------------------------------------
-// Postgres connection pool
-// ---------------------------------------------------------------------------
-const pool = new Pool({
-  host: process.env.PGHOST || "localhost",
-  port: Number(process.env.PGPORT) || 5432,
-  user: process.env.PGUSER || "postgres",
-  password: process.env.PGPASSWORD || "postgres",
-  database: process.env.PGDATABASE || "postgres",
 });
 
 // ---------------------------------------------------------------------------
@@ -59,16 +49,7 @@ const resolvers = {
         traceparent: context.traceparent ?? null,
       });
 
-      // The pg auto-instrumentation wraps pool.query and creates a child DB span
-      // linked to the active HTTP server span — no manual code needed.
-      const result = await pool.query("SELECT NOW() AS current_time");
-      const currentTime = result.rows[0].current_time;
-
-      logger.info("Service B: database query successful", {
-        current_time: currentTime,
-      });
-
-      return currentTime;
+      throw new Error("Simulated failure in dbTime resolver");
     },
   },
 };

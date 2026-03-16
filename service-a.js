@@ -33,6 +33,7 @@ const logger = winston.createLogger({
   // (trace_id, span_id, trace_flags) to every log record when a span is active.
   transports: [
     new winston.transports.Console(),
+    new OpenTelemetryTransportV3(),
   ],
 });
 
