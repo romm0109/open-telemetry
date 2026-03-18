@@ -9,7 +9,14 @@
       "WebFetch(domain:github.com)",
       "WebFetch(domain:docs.sentry.io)",
       "WebFetch(domain:deepnote.com)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "WebFetch(domain:open-telemetry.github.io)",
+      "Bash(python3 -c \":*)",
+      "WebFetch(domain:oneuptime.com)",
+      "WebFetch(domain:docs.datadoghq.com)",
+      "WebFetch(domain:betterstack.com)",
+      "WebFetch(domain:medium.com)",
+      "WebFetch(domain:www.redhat.com)"
     ]
   }
 }

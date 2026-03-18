@@ -37,10 +37,22 @@ const logger = winston.createLogger({
 // GraphQL schema + resolvers
 // ---------------------------------------------------------------------------
 const typeDefs = `
+  type User {
+    id: ID
+    name: String
+    email: String
+  }
+
   type Query {
     dbTime: String
+    users: [User]
   }
 `;
+
+const USERS = [
+  { id: "1", name: "Alice", email: "alice@example.com" },
+  { id: "2", name: "Bob", email: "bob@example.com" },
+];
 
 const resolvers = {
   Query: {
@@ -48,9 +60,20 @@ const resolvers = {
       logger.info("Service B: resolving dbTime query", {
         traceparent: context.traceparent ?? null,
       });
-
       throw new Error("Simulated failure in dbTime resolver");
     },
+    users: async (_parent, _args, context) => {
+      logger.info("Service B: resolving users query", {
+        traceparent: context.traceparent ?? null,
+      });
+      return USERS;
+    },
+  },
+  // Explicit field resolvers on User — these should be filtered out by ignoreResolveSpans
+  User: {
+    id: (parent) => parent.id,
+    name: (parent) => parent.name,
+    email: (parent) => parent.email,
   },
 };
 
